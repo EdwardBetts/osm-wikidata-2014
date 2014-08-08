@@ -1,5 +1,8 @@
 import codecs
 import cgi
+import re
+
+re_strip_non_chars = re.compile('\W')
 
 
 def name_match(osm, wd):
@@ -7,11 +10,21 @@ def name_match(osm, wd):
     osm_lc = osm.lower()
     if wd_lc == osm_lc:
         return True
-    rs = ' railway station'
-    if wd_lc.endswith(rs) and wd_lc[:-len(rs)] == osm_lc:
-        return True
     comma = wd_lc.rfind(', ')
     if comma != -1 and wd_lc[:comma] == osm_lc:
+        return True
+    wd_lc = re_strip_non_chars.sub('', wd_lc).replace(' and ', '')
+    osm_lc = re_strip_non_chars.sub('', osm_lc).replace(' and', '')
+    if wd_lc == osm_lc:
+        return True
+    if wd_lc.startswith('the'):
+        wd_lc = wd_lc[3:]
+    if osm_lc.startswith('the'):
+        osm_lc = osm_lc[3:]
+    if wd_lc == osm_lc:
+        return True
+    rs = 'railwaystation'
+    if wd_lc.endswith(rs) and wd_lc[:-len(rs)] == osm_lc:
         return True
     return False
 
@@ -49,6 +62,7 @@ def as_table():
     out = codecs.open('matches.html', 'w', 'utf-8')
     matches = list(find_matches())
     print >> out, u'<html><head>'
+    print >> out, u'<meta charset="utf-8">'
     print >> out, u'<title>Wikidata to OSM matches</title>'
     print >> out, u'<style>th { text-align: left; }</style>'
     print >> out, u'</head>'
