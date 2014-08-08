@@ -36,6 +36,15 @@ def tag_table(osm):
     return ret
 
 
+def show_tags(osm):
+    interesting = {'tourism', 'railway', 'amenity', 'historic', 'railway',
+                   'disused', 'craft', 'office', 'shop', 'leisure', 'aeroway',
+                   'use', 'man_made'}
+    return ' | '.join(u'{}={}'.format(k, cgi.escape(v))
+                     for k, v in osm['tags'].items()
+                     if k in interesting or k == 'building' and v.lower() != 'yes')
+
+
 def as_table():
     out = codecs.open('matches.html', 'w', 'utf-8')
     matches = list(find_matches())
@@ -52,12 +61,12 @@ def as_table():
         print >> out, u'<td align="right" nowrap="nowrap"><a href="https://www.wikidata.org/wiki/{}">{}</a></td><td>{}</td>'.format(
               wikidata['id'], wikidata['name'], wikidata['id'])
         osm0 = osm[0]
-        print >> out, u'<td nowrap="nowrap"><a href="http://www.openstreetmap.org/way/{}">{}</a> ({})</td>'.format(osm0['id'], osm0['tags']['name'], osm0['id'])
+        print >> out, u'<td nowrap="nowrap"><a href="http://www.openstreetmap.org/way/{}">{}</a> ({})</td><td>{}</td>'.format(osm0['id'], osm0['tags']['name'], osm0['id'], show_tags(osm0))
         print >> out, u'</tr>'
         if len(osm) > 1:
             for i in osm[1:]:
                 print >> out, u'<tr><td></td><td></td>'
-                print >> out, u'<td nowrap="nowrap"><a href="http://www.openstreetmap.org/way/{}">{}</a> ({})</td>'.format(i['id'], i['tags']['name'], i['id'])
+                print >> out, u'<td nowrap="nowrap"><a href="http://www.openstreetmap.org/way/{}">{}</a> ({})</td><td>{}</td>'.format(i['id'], i['tags']['name'], i['id'], show_tags(i))
                 print >> out, u'</tr>'
     print >> out, u'</table></body></html>'
 
