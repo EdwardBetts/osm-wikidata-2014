@@ -8,7 +8,7 @@ from unidecode import unidecode
 re_strip_non_chars = re.compile('\W', re.U)
 
 endings = {}
-for cats, amenity, end in json.load(open('entity_types')):
+for cats, amenity, end in json.load(open('entity_types.json')):
     end = [x.replace(' ', '').lower() for x in end]
     for cat in cats:
         endings[cat.replace('_', ' ')] = end

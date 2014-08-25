@@ -132,7 +132,7 @@ def get_data(cat, osm_tags):
     json.dump(all_items, open(filename, 'w'), indent=2)
 
 if __name__ == '__main__':
-    for cats, osm_tags in json.load(open('entity_types')):
+    for cats, osm_tags, endings in json.load(open('entity_types.json')):
         for cat in cats:
             print (cat, osm_tags)
             get_data(cat, osm_tags)
