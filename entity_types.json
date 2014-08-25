@@ -56,5 +56,5 @@
     [["Lakes by country"],                      ["water=lake", "natural=lake"], ["lake", "water"]],
     [["Volcanoes by country"],                  ["natural=volcano"], ["volcano"]],
     [["Waterfalls by country"],                 ["waterway=waterfall"], ["waterfall"]],
-    [["Wetlands by country"],                   ["natural=wetland"], ["wetland"]],
+    [["Wetlands by country"],                   ["natural=wetland"], ["wetland"]]
 ]
