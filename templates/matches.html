@@ -1,9 +1,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>OSM - wikdata</title>
+<title>{{ cat }} - OSM - Wikdata</title>
 </head>
 <body>
+<h1>{{ cat }}</h1>
+Found {{ count }} matches.<p>
+On Wikipedia: <a href="https://en.wikipedia.org/wiki/Category:{{ full_cat.replace(' ', '_') }}">Category:{{ full_cat }}</a><p>
 <table>
     {% for wikidata, osm in matches %}
     <tr>

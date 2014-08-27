@@ -1,0 +1,17 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Wikdata - OSM</title>
+</head>
+<body>
+Found {{ '{:,d}'.format(total_count) }} total matches.<p>
+<table>
+    {% for name, count in cats %}
+    <tr>
+        <td><a href="{{ name }}.html">{{ name }}</a></td>
+        <td align="right">{{ '{:,d}'.format(count) }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

@@ -74,6 +74,7 @@ def process():
     all_matches = defaultdict(set)
     wikidata_lookup = {}
     osm_lookup = {}
+    wikipedia_cats = defaultdict(set)
     for f in os.listdir(d):
         filename = os.path.join(d, f)
         print filename
@@ -96,6 +97,7 @@ def process():
             wikidata_lookup[item['id']] = item2
             osm_lookup[(matches[0]['type'], matches[0]['id'])] = matches[0]
             all_matches[item['id']].add((matches[0]['type'], matches[0]['id']))
+            wikipedia_cats[item['id']].add(cat)
             num += 1
             if num % 100 == 0:
                 print (num, name, item['id'], matches[0]['tags']['name'])
@@ -107,7 +109,7 @@ def process():
             continue
         item = wikidata_lookup[wikidata_id]
         osm = osm_lookup[list(osm_matches)[0]]
-        print >> out, (item, osm)
+        print >> out, (item, osm, list(wikipedia_cats[wikidata_id]))
     out.close()
 
     print 'number of wikidata items that match multiple OSM objects with different entity types: {}'.format(multiple_osm_count)
