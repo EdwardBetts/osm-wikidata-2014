@@ -8,7 +8,10 @@ from math import pi, sin, cos, acos
 s = requests.Session()
 s.mount('http://overpass-api.de', HTTPAdapter(max_retries=10))
 
+ua = 'osm-wikidata/0.1 (https://github.com/EdwardBetts/osm-wikidata; edwardbetts@gmail.com)'
 s2 = requests.Session()
+s2.headers={ 'User-Agent': ua }
+wikidata_url = 'https://www.wikidata.org/w/api.php'
 s2.mount('https://www.wikidata.org', HTTPAdapter(max_retries=10))
 s2.params = {
     'action': 'wbgetentities',
@@ -46,16 +49,29 @@ def chunk(it, size):
     return iter(lambda: tuple(islice(it, size)), ())
 
 
-def get_category_articles(cat, depth=4):
-    url = 'http://tools.wmflabs.org/catscan2/catscan2.php'
-    params = {'format': 'json', 'depth': depth, 'doit': 1, 'categories': cat}
-    x = requests.get(url, params=params).json()
-
-    for i in x['*'][0]['*']:
-        title = i['a']['title']
-        if title.startswith('List_of_'):
+def get_category_articles(cat):
+    depth = 6
+    num = 0
+    while True:
+        print 'category: {}, depth: {}'.format(cat, depth)
+        url = 'http://tools.wmflabs.org/catscan2/catscan2.php'
+        params = {'format': 'json', 'depth': depth, 'doit': 1, 'categories': cat}
+        r = requests.get(url, params=params)
+        try:
+            x = r.json()
+        except ValueError:
+            assert 'Maximum potential result objects exceeded, aborting' in r.content
+            depth -= 1
             continue
-        yield title
+        for i in x['*'][0]['*']:
+            title = i['a']['title']
+            if title.startswith('List_of_'):
+                continue
+            num += 1
+            if num % 20 == 0:
+                print u'catscan: {}'.format(title)
+            yield title
+        break
 
 
 def parse_wikidata(x):
@@ -96,6 +112,22 @@ def buildings_from_overpass(items, tags, radius=400):
     return json_data['elements']
 
 
+def overpass_is_in(item, tags):
+    filters = []
+    lat, lon = item['lat'], item['lon']
+    for tag in tags:
+        filters.append('is_in({},{})[{}]["name"];'.format(lat, lon, tag))
+    oql = '[timeout:360][out:json];({});\nout center;\n'.format(' '.join(filters))
+    url = 'http://overpass-api.de/api/interpreter'
+    r = s.get(url, params={'data': oql})
+    try:
+        json_data = json.loads(r.content)
+    except ValueError:
+        open('bad_overpass', 'w').write(r.content)
+        raise
+    return json_data['elements']
+
+
 def get_data(cat, osm_tags):
     filename = 'found/' + cat + '.json'
     if os.path.exists(filename):
@@ -104,6 +136,33 @@ def get_data(cat, osm_tags):
     titles = get_category_articles(cat)
 
     wikidata_url = 'https://www.wikidata.org/w/api.php'
+    all_items = []
+    for cur in chunk(titles, 10):
+        r = s2.get(wikidata_url, params={'titles': '|'.join(cur)})
+        content = r.content
+        try:
+            json_data = json.loads(content)
+        except ValueError:
+            open('bad_wikidata', 'w').write(content)
+            raise
+        items = [i for i in parse_wikidata(json_data) if i['id'] not in skip]
+        if not items:
+            continue
+        print items[0].get('labels', {}).get('en')
+        for item in items:
+            item['osm'] = overpass_is_in(item, osm_tags)
+            all_items.append(item)
+
+    json.dump(all_items, open(filename, 'w'), indent=2)
+
+
+def find_is_in_cat(cat, osm_tags, skip):
+    filename = 'is_in/' + cat + '.json'
+    if os.path.exists(filename):
+        print 'skipping', filename
+        return
+    titles = get_category_articles(cat)
+
     all_items = []
     for cur in chunk(titles, 10):
         r = s2.get(wikidata_url, params={'titles': '|'.join(cur)})
@@ -131,8 +190,21 @@ def get_data(cat, osm_tags):
 
     json.dump(all_items, open(filename, 'w'), indent=2)
 
-if __name__ == '__main__':
+
+def find_near():
     for cats, osm_tags, endings in json.load(open('entity_types.json')):
         for cat in cats:
             print (cat, osm_tags)
             get_data(cat, osm_tags)
+
+
+def find_is_in():
+    skip = {line[:-1] for line in open('one_or_more_match')}
+    for cats, osm_tags, endings in json.load(open('entity_types.json')):
+        for cat in cats:
+            print (cat, osm_tags)
+            find_is_in_cat(cat, osm_tags, skip)
+
+if __name__ == '__main__':
+    find_near()
+    find_is_in()

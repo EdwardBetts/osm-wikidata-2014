@@ -1,7 +1,7 @@
 [
     [["Forts_by_country"],                      ["historic=fort", "castle_type=fortress"], ["fort"]],
     [["Libraries", "Library_buildings"],        ["amenity=library"], ["library"]],
-    [["Bridges_by_country"],                    ["bridge=yes"], ["bridge", "aqueduct"]],
+    [["Bridges_by_country"],                    ["bridge"], ["bridge", "aqueduct"]],
     [["Towers_by_country"],                     ["man_made=tower"], ["tower"]],
     [["Cemeteries_by_country"],                 ["landuse=cemetery", "amenity=grave_yard"], ["cemetery", "grave yard", "burial ground", "burying ground"]],
     [["Museums_by_country"],                    ["tourism=museum", "historic=museum"], ["museum"]],
@@ -10,7 +10,7 @@
     [["Shopping_malls_by_country"],             ["shop=mall"], ["mall", "shopping mall"]],
     [["Castles_by_country"],                    ["historic=castle"], ["castle"]],
     [["Places_of_worship_by_country"],          ["amenity=place_of_worship"], ["church", "temple"]],
-    [["Restaurants_by_country"],                ["amenity=restaurant", "amenity=cafe"], ["cafe", "restaurant", "diner", "tea room", "coffee shop", "inn", "grill", "lounge"]],
+    [["Restaurants_by_country"],                ["amenity=restaurant", "amenity=fast_food", "amenity=cafe"], ["cafe", "restaurant", "diner", "tea room", "coffee shop", "inn", "grill", "lounge"]],
     [["Hotels_by_country"],                     ["tourism=hotel"], ["hotel", "resort"]],
     [["Monuments_and_memorials_by_country"],    ["historic=monument"], ["monument"]],
     [["Dams_by_country"],                       ["waterway=dam"], ["dam"]],
@@ -63,7 +63,7 @@
     [["Post office buildings"],                 ["amenity=post_office"], ["post office"]],
     [["Power stations by country"],             ["power=station", "power=plant", "power=generator"], []],
     [["Reservoirs by country"],                 ["landuse=reservoir", "man_made=reservoir_covered"], ["reservoir"]],
-    [["Parks by country"],                      ["leisure=park"], ["park", "gardens"]],
+    [["Parks by country"],                      ["leisure=park", "landuse=recreation_ground", "leisure=common"], ["park", "gardens", "common"]],
     [["National parks by country"],             ["leisure=nature_reserve", "boundary=national_park"], []],
     [["Piers by country"],                      ["man_made=pier"], ["pier"]],
     [["Quarries"],                              ["landuse=quarry", "man_made=mineshaft"], ["mine", "quarry"]],
@@ -78,8 +78,7 @@
     [["Tram stops in the United Kingdom"],      ["railway=tram_stop"], ["tram stop", "stop"]],
     [["Forests by country"],                    ["landuse=forest", "natural=wood"], ["wood", "forset"]],
     [["Apartment buildings"],                   ["building=apartments"], ["house", "apartments"]],
-    [["Villages by country"],                   ["place=village", "place=hamlet"], []],
-    [["Tunnels by country"],                    ["tunnel=yes"], ["tunnel"]],
+    [["Tunnels by country"],                    ["tunnel"], ["tunnel"]],
     [["Roundabouts and traffic circles"],       ["junction=roundabout"], ["roundabout", "traffic circle"]],
     [["Playgrounds"],                           ["leisure=playground"], ["playground"]],
     [["Filling stations"],                      ["amenity=fuel"], ["petrol station", "filling station", "gas station"]],
@@ -88,6 +87,13 @@
     [["Gardens by country"],                    ["leisure=garden"], ["garden"]],
     [["Supermarkets by country"],               ["shop=supermarket"], ["market", "supermarket"]],
     [["Convenience stores"],                    ["shop=convenience"], ["convience store", "corner shop"]],
-    [["Pharmacies by country"],                 ["amenity=pharmacy"], ["chemist", "pharmacy", "drug store"]]
-
+    [["Pharmacies by country"],                 ["amenity=pharmacy"], ["chemist", "pharmacy", "drug store"]],
+    [["Villages by country"],                   ["place=village", "place=hamlet"], []],
+    [["Swamps"],                                ["wetland=swamp"], ["swamp"]],
+    [["Shops"],                                 ["shop"], ["shop"]],
+    [["Warehouses"],                            ["building=warehouse"], ["warehouse"]],
+    [["Rapids"],                                ["waterway=rapids"], ["rapids"]],
+    [["Aircraft hangars"],                      ["building=hangar"], []],
+    [["Mountain huts"],                         ["tourism=alpine_hut", "tourism=wilderness_hut"], ["hut"]],
+    [["Oil platforms", "Oil wells"],            ["man_made=pumping_rig", "man_made=petroleum_well"], []]
 ]

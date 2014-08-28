@@ -75,6 +75,7 @@ def process():
     wikidata_lookup = {}
     osm_lookup = {}
     wikipedia_cats = defaultdict(set)
+    one_or_more = open('one_or_more_match', 'w')
     for f in os.listdir(d):
         filename = os.path.join(d, f)
         print filename
@@ -90,6 +91,8 @@ def process():
                 osm_names = set([i['tags']['name']] + [v for k, v in i['tags'].items() if k.startswith('name:')])
                 if any(name_match(o, w, endings[cat]) for o in osm_names for w in wikidata_names):
                     matches.append(i)
+            if len(matches) > 0:
+                print >> one_or_more, item['id']
             if len(matches) != 1:
                 continue
             item2 = copy(item)
@@ -101,6 +104,7 @@ def process():
             num += 1
             if num % 100 == 0:
                 print (num, name, item['id'], matches[0]['tags']['name'])
+    one_or_more.close()
     out = open('match_list', 'w')
     multiple_osm_count = 0
     for wikidata_id, osm_matches in all_matches.iteritems():
